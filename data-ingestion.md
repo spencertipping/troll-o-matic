@@ -163,3 +163,28 @@ $ ni sources rp'$.&1' \
           W\>e[xz -9e] \
   | cat
 ```
+
+## Accessing the data
+We can avoid the overhead of starting new `xz` processes by concatenating the
+compressed files up front; for example:
+
+```sh
+$ time cat 2008.* | xz -dc | wc -l
+3723961
+
+real    1m5.546s
+user    0m46.260s
+sys     0m5.396s
+```
+
+We can also parallelize decompression using `xargs` (ordinarily we'd do better,
+but I'm running this concurrently with the ingestion step above):
+
+```sh
+$ time ls 2008.* | xargs -n16 -P12 xz -dc | wc -l
+3723961
+
+real    0m16.929s
+user    0m47.720s
+sys     0m4.888s
+```
