@@ -47,4 +47,51 @@ There are a few ways we could measure troll performance:
 2. General engagement with posted things
 3. Engagement from users the troll replies to
 
+**TODO:** more structure around this; what can we observe externally?
 
+## Processing Reddit comments
+You can download pretty much all of Reddit by assembling a few different
+datasources, all of which ultimately come from
+[PushShift](https://pushshift.io/).
+
+- [A fairly complete torrent of
+  comments](http://academictorrents.com/details/85a5bd50e4c365f8df70240ffd4ecc7dec59912b)
+- [PushShift reddit files](https://files.pushshift.io/reddit/)
+
+As datasets go, these are nearly perfect: the format is consistent, concise, and
+self-explanatory. I want to do three things:
+
+1. Split files by hour instead of month
+2. Unify the compression to `xz -9e` (we're going to be IO-bound)
+3. Convert from JSON to TSV
+
+The monthly files are _almost_ sorted by time:
+
+```sh
+$ ni RC_2018-06.xz D:created_utc ,d c
+1       1527811200
+40      0
+1       1
+1       -1          # time moves backwards
+1       1
+48      0
+1       1
+34      0
+1       1
+46      0
+1       1
+1       -1          # same here
+1       1
+47      0
+...
+```
+
+These skips are minimal, so I'll coerce timestamps into ascending order rather
+than fully sorting everything. This will introduce a few seconds of inaccuracy
+for about 1% of the data.
+
+### Extracting JSONs
+ni provides the `D` operator to rapidly destructure JSON objects, and I [just
+pushed a
+change](https://github.com/spencertipping/ni/commit/d072b4232fea4b99e579e9d226a771d15489c503)
+to make it compatible with multiline/tab-embedded text.
