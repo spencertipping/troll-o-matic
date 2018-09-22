@@ -93,6 +93,16 @@ These skips are minimal, so I'll coerce timestamps into ascending order rather
 than fully sorting everything. This will introduce a few seconds of inaccuracy
 for about 1% of the data.
 
+**Update:** some time skips are a lot worse:
+
+```sh
+$ ni RC_2008-12.lz4 D:created_utc | nfu -p %l
+```
+
+![image](screenshots/rc12-times.png)
+
+This means we need to allow large backward skips.
+
 Let's format the filenames in a way that's easy to match with wildcards:
 `yyyy.mmdd.hh.xz`:
 
@@ -196,6 +206,7 @@ order.
 $ ni sources rp'$.&1' \
   | xargs -I{} -P24 \
     ni {} p'my ($utc) = /"created_utc":"?(\d+)"?/;
+            $t = $utc if $utc + 1800 < $t;      # allow large backward skips
             r sprintf("%04d.%02d%02d.%02d.xz",
                       tep YmdH => ($t = max $t // 0, $utc)),
               je jd a' \
