@@ -8,6 +8,7 @@ other measurable indicators.
 
 ## Data processing
 - [Comment ingestion and sharding](data-comment-ingestion.md)
+- [Submission ingestion and sharding](data-submission-ingestion.md)
 - [Relevant users and subreddits](data-relevant.md)
 - [TSV extraction](data-tsv.md)
 
