@@ -9,14 +9,13 @@ We actually could deal with the not-enough-comments problem, but we'll end up
 throwing a lot of computation at it for diminishing returns.
 
 ## First export: author+subreddit+date
-We'll access this dataset several times, so let's generate it once in LZ4. I'm
-truncating the timestamps to the nearest hour to improve compression.
+We'll access this dataset several times, so let's generate it once in LZ4.
 
 ```sh
 $ ni reddit-comments r/xz/ \
-     e[ xargs -P12 -n1024 sh -c '
+     e[ xargs -P12 -n128 sh -c '
         xz -dc $* \
-        | ni D:author,:subreddit,:created_utc rABC rp"a ne \"[deleted]\"" \
-             p"r a, b, c - c%3600" z4\>author-subreddit-date.`uuid`' -- ] \
+        | ni : D:author,:subreddit,:created_utc rABC rp"a ne \"[deleted]\"" \
+             z4\>author-subreddit-date.`uuid`' -- ] \
   | cat
 ```
