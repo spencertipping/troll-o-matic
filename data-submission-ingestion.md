@@ -22,5 +22,5 @@ $ ni sources e[ \
 Later, to recompress as `xz` offline:
 
 ```sh
-$ ls 20* | xargs -P24 -I{} ni {} e[xz -9] \>{}.xz | cat
+$ ls 20* | xargs -P24 -I{} ni {} e[xz -9e] \>{}.xz | cat
 ```
