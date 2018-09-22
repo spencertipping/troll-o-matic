@@ -13,7 +13,7 @@ We'll access this dataset several times, so let's generate it once in LZ4.
 
 ```sh
 $ mkdir -p author-subreddit-date
-$ for y in 2011 2012; do
+$ for y in {2005..2018}; do
     ni reddit-comments r/\\/$y/ \
        e[ xargs -P12 -n128 sh -c '
           xz -dc $* \
