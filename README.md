@@ -7,7 +7,7 @@ and I'm interested to see if troll accounts show any patterns of coordination or
 other measurable indicators.
 
 ## Data processing
-- [Ingestion and sharding](data-ingestion-sharding.md)
+- [Ingestion and sharding](data-ingestion.md)
 - [TSV extraction](data-tsv.md)
 
 ## Troll identification experiments
