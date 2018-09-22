@@ -37,7 +37,7 @@ We can measure a troll's effectiveness in a few ways:
 Ultimately a troll farm is going for (6), but 1-5 are varying-quality proxies
 that are easier to attribute to individual employees.
 
-## High-level strategic constraints
+## High-level strategy
 A troll farm has two strategic goals: create and amplify a haven for the desired
 form of extremism, and subtly shift moderate communities towards those extremes.
 Reddit itself already does the former simply due to its community-oriented
@@ -54,6 +54,7 @@ process.
 
 Shifting moderates is a riskier and longer-term strategy that's difficult to
 measure; it wouldn't surprise me if most troll farms avoided it just for those
-reasons. It is much higher-impact, though, particularly if the goal is to create
-a sense of disunity (i.e. propel users in any extreme direction, not necessarily
-a specific one).
+reasons. I'm also not sure it provides very good returns: ISIS recruits
+extremists through radicalization communities, and those extremists then become
+recruiters. I could easily imagine radicalization being a higher-return strategy
+than trying to move moderates directly.
