@@ -145,6 +145,16 @@ $ ni RC_2018-06.xz D:created_utc \
 ...
 ```
 
+**Quick sanity check:** do we get an unmanageable number of files from this?
+
+```sh
+$ units -t 13years hours
+113955.57
+```
+
+It's a lot, but not too many to manage easily with `xargs`. We'd only be in
+trouble if we were using Hadoop.
+
 Now we can produce hourlies. We can't use `D` because it consumes the JSON, but
 we can write a simple regex to do the same thing:
 
@@ -179,7 +189,8 @@ otherwise).
 The final bit of processing I want to do is to normalize the field ordering
 inside the JSON objects. This opens the door for some interesting optimizations
 I'd like to research later on. The simplest way to do this transformation is to
-just re-encode the JSON using `je(jd(a))`.
+just re-encode the JSON using `je(jd(a))`; ni always emits the keys in sorted
+order.
 
 ```sh
 $ ni sources rp'$.&1' \
