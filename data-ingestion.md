@@ -149,7 +149,8 @@ The final bit of processing I want to do is to normalize the field ordering
 inside the JSON objects. This opens the door for some interesting optimizations
 I'd like to research later on. The simplest way to do this transformation is to
 just re-encode the JSON using `je(jd(a))`; ni always emits the keys in sorted
-order.
+order. Re-encoding the JSONs doesn't significantly impact performance; it runs
+at about 5MB/s, whereas `xz -9e` compresses at less than 1MB/s.
 
 ```sh
 $ ni sources rp'$.&1' \
