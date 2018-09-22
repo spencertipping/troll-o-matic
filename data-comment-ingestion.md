@@ -181,10 +181,10 @@ We can also parallelize decompression using `xargs` (ordinarily we'd do better,
 but I'm running this concurrently with the ingestion step above):
 
 ```sh
-$ time ls 2008.* | xargs -n16 -P12 xz -dc | wc -l
+$ time ls 2008.* | xargs -n64 -P12 sh -c 'xz -dc $* | wc -l' -- | ni ,sr+1 | cat
 3723961
 
-real    0m16.929s
-user    0m47.720s
-sys     0m4.888s
+real    0m11.342s
+user    0m47.384s
+sys     0m4.376s
 ```
