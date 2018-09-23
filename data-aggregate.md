@@ -11,6 +11,9 @@ reasons:
 - Users that haven't made enough comments to be meaningful
 - Subreddits that don't have enough comments to be meaningful
 
+(**NB:** we can actually use `[deleted]` data in some cases: we may be able to
+deanonymize users by looking at historical activity.)
+
 This aggregate export should give us enough to identify relevant
 users/subreddits for future steps.
 
@@ -37,13 +40,20 @@ for each:
     - Downvotes
 
 ```sh
-$ ni reddit-comments r/\\/20/ \< \
-     S24[D:author,:subreddit,:created_utc,:link_id,:parent_id,:ups,:score \
-         rABC rp'a ne "[deleted]"' p'r a, b, c, d, e, f, f - g'] \
-     z4\>author-subreddit-date-comments
+$ mkdir -p agg-comments agg-submissions
 
-$ ni reddit-submissions r/\\/20/ \< \
-     S24[D:author,:subreddit,:created_utc,:name,:domain,:ups,:downs \
-         rABC rp'a ne "[deleted]"'] \
-     z4\>author-subreddit-date-submissions
+$ ni reddit-comments r/\\/20/ F:/fB \
+     e[ xargs -P24 -I{} \
+        ni reddit-comments/{} \
+           D:author,:subreddit,:created_utc,:link_id,:parent_id,:ups,:score \
+           rABC p'r a, b, c, d, e, f, f - g' \
+           z4\>agg-comments/{} ] \
+  | cat
+
+$ ni reddit-submissions r/\\/20/ F:/fB \
+     e[ xargs -P24 -I{} \
+        ni reddit-submissions/{} \
+           D:author,:subreddit,:created_utc,:name,:domain,:ups,:downs rABC \
+           z4\>agg-submissions/{} ] \
+  | cat
 ```
