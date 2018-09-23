@@ -64,8 +64,8 @@ posts separate because disrepancies between the two might tell us something
 interesting.
 
 ```sh
-$ ni agg-submissions \<S12fA ^{row/sort-buffer=16384M} gcx Oz4\>agg-userposts
-$ ni agg-submissions \<S12fB ^{row/sort-buffer=16384M} gcx Oz4\>agg-subposts
-$ ni agg-comments    \<S12fA ^{row/sort-buffer=16384M} gcx Oz4\>agg-usercomments
-$ ni agg-comments    \<S12fB ^{row/sort-buffer=16384M} gcx Oz4\>agg-subcomments
+$ ni agg-submissions \<S12[fA U] xg,sgA z4\>agg-userposts
+$ ni agg-submissions \<S12[fB U] xg,sgA z4\>agg-subposts
+$ ni agg-comments    \<S12[fA U] xg,sgA z4\>agg-usercomments
+$ ni agg-comments    \<S12[fB U] xg,sgA z4\>agg-subcomments
 ```
