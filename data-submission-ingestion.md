@@ -22,5 +22,5 @@ $ ni sources e[ \
 Later, to recompress as `xz` offline:
 
 ```sh
-$ ls 20* | xargs -P24 -I{} ni {} e[xz -9e] \>{}.xz | cat
+$ mkdir xz; ls 20* | xargs -P8 -I{} ni {} e[xz -9e] \>xz/{} | cat
 ```

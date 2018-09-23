@@ -28,8 +28,8 @@ for each:
     - Date
     - Comment ID
     - Parent ID
-    - Upvotes
-    - Downvotes (= upvotes - score)
+    - Score
+    - Controversiality
 - Submissions
     - Author
     - Subreddit
@@ -45,9 +45,8 @@ $ mkdir -p agg-comments agg-submissions
 $ ni reddit-comments r/\\/20/ F:/fB \
      e[ xargs -P24 -I{} \
         ni reddit-comments/{} \
-           D:author,:subreddit,:created_utc,:link_id,:parent_id,:ups,:score \
-           rABC p'r a, b, c, d, e, f, f - g' \
-           z4\>agg-comments/{} ] \
+           D:author,:subreddit,:created_utc,:link_id,:parent_id,:score,:controversiality \
+           rABC z4\>agg-comments/{} ] \
   | cat
 
 $ ni reddit-submissions r/\\/20/ F:/fB \
@@ -63,9 +62,13 @@ Now let's count up activity by user and subreddit. I'm keeping comments and
 posts separate because disrepancies between the two might tell us something
 interesting.
 
+(**NB:** I could use the same query structure for all of these, but there are
+few enough subreddits that it's worth bulk-sorting the counts to get some
+parallelism.)
+
 ```sh
-$ ni agg-submissions \<S12[fA U] xg,sgA z4\>agg-userposts
-$ ni agg-submissions \<S12[fB U] xg,sgA z4\>agg-subposts
-$ ni agg-comments    \<S12[fA U] xg,sgA z4\>agg-usercomments
-$ ni agg-comments    \<S12[fB U] xg,sgA z4\>agg-subcomments
+$ ni agg-comments    \<fA Uxz\>agg-usercomments
+$ ni agg-submissions \<fA Uxz\>agg-userposts
+$ ni agg-submissions \<S12[fB Ux] g,sgA z\>agg-subposts
+$ ni agg-comments    \<S12[fB Ux] g,sgA z\>agg-subcomments
 ```
