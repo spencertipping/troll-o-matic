@@ -9,8 +9,7 @@ other measurable indicators.
 ## Data processing
 - [Comment ingestion and sharding](data-comment-ingestion.md)
 - [Submission ingestion and sharding](data-submission-ingestion.md)
-- [Relevant users and subreddits](data-relevant.md)
-- [TSV extraction](data-tsv.md)
+- [Aggregate user/subreddit data](data-aggregate.md)
 
 ## Troll identification experiments
 Let's start with Russian trolls because they should be easy to identify [just by
