@@ -72,3 +72,95 @@ $ ni agg-submissions \<fA Uxz\>agg-userposts
 $ ni agg-submissions \<S12[fB Ux] g,sgA z\>agg-subposts
 $ ni agg-comments    \<S12[fB Ux] g,sgA z\>agg-subcomments
 ```
+
+I plan to do some matrix operations on both users and subs, so we'll have memory
+limitations to consider (I assume three copies of whichever matrix we're
+operating on):
+
+```sh
+$ units -t 'sqrt(144GB / 8B / 3)'
+77459.667                               # hard limit on matrix dimensions
+```
+
+### Most-common subreddits
+Here's the distribution of subreddits by #comments, log2-scaled on both axes:
+
+```sh
+$ ni agg-subcomments fB,l2qoc,l2x | nfu -p %l
+```
+
+![image](screenshots/subs-by-comments.png)
+
+A better way to look at it is as a traffic accumulation:
+
+```sh
+$ ni agg-subcomments fB O,s | nfu -p %l
+```
+
+![image](screenshots/d4d7658e-bf92-11e8-a518-eb322b855670.png)
+
+Let's break it out in terms of percentage of total traffic:
+
+```sh
+$ ni agg-subcomments fB O,sr+1
+4408877755                              # total comments
+$ ni agg-subcomments fB O,sp'r a/4408877755, $.' ,q.05p'r a, b, () = rea'
+0.1     1
+0.15    4
+0.2     8
+0.25    14
+0.3     22
+0.35    35
+0.4     54
+0.45    81
+0.5     119
+0.55    172
+0.6     244
+0.65    343
+0.7     473
+0.75    652
+0.8     926
+0.85    1349
+0.9     2059
+0.95    3528
+1       9402
+```
+
+...so we can get about 97.5% of comments with 9402 subreddits. Let's say we want
+99%:
+
+```sh
+$ ni agg-subcomments fB O,s Wn rp'b/4408877755 >= 0.99' r1
+19403   4364789093
+```
+
+Awesome, 19403. That's a manageable number. Let's build that list so we can
+filter stuff later on:
+
+```sh
+$ ni agg-subcomments OBfAr19403 >relevant-subs
+```
+
+### Users
+Before I kick this off, let's do some rough math for "human-reasonable" numbers.
+I need to be careful about how I put this together because trolls might behave
+like bots, but we want those.
+
+OK, let's assume the most absolutely dedicated redditor spends 12 hours a day
+online creating one comment per minute. This is a maximum of 720 comments per
+day, which is an insane amount. Let's find each redditor's observable lifetime,
+and to simplify this let's build a user index -- and let's shard aggressively by
+user ID.
+
+```sh
+$ mkdir user-comments; \
+  ni agg-comments \<S12[rp'a ne "[deleted]"' \
+                        p'my $h = unpack(n => md5 a) >> 6;    # 1024 shards
+                          r "/tmp/" . ($h >> 5),
+                            sprintf("user-comments/%03x", $h), $_'] \
+     S\>S\>z4
+```
+
+We need two subsets, one for "eigenusers" (stuff that fits into a matrix) and
+one for "nontrivial users" (anyone who posts to more than one subreddit, more or
+less).
