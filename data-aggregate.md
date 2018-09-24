@@ -163,14 +163,14 @@ $ mkdir user-comments; \
 Lifetime calculation:
 
 ```sh
-$ mkdir -p /tmp/user-comments; \
-  ni user-comments e[ xargs -P24 -I{} \
-    ni {} fACp'^{%max = %min = ()}
-               $max{+a} = max $max{+a} // b, b;
-               $min{+a} = min $min{+a} // b, b; ();
-               END { r $_, $min{$_}, $max{$_} for keys %max }' \
-          z4\>/tmp/{} ] \
-    \<z4\>user-lifetimes
+$ mkdir -p user-lifetimes; \
+  ni user-comments F:/fB e[ xargs -P24 -I{} \
+    ni user-comments/{} fAC \
+       p'^{%max = %min = ()}
+           $max{+a} = max $max{+a} // b, b;
+           $min{+a} = min $min{+a} // b, b; ();
+           END { r $_, $min{$_}, $max{$_} for keys %max }' \
+       z4\>user-lifetimes/{} ] | cat
 ```
 
 We need two subsets, one for "eigenusers" (stuff that fits into a matrix) and
