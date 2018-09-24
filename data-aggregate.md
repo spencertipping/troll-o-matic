@@ -171,6 +171,27 @@ $ mkdir -p user-lifetimes; \
            $min{+a} = min $min{+a} // b, b; ();
            END { r $_, $min{$_}, $max{$_} for keys %max }' \
        z4\>user-lifetimes/{} ] | cat
+
+# quick histogram of rounded log2(#hours)
+$ ni user-lifetimes \<S24[p'(c - b) / 3600' ,L2q] ocx
+0       10177106                        # most users vanish quickly
+1       861358
+2       462323
+3       369701
+4       547915
+5       613735
+6       603718
+7       706777
+8       818043                          # ~10 days
+9       1027436                         # ~21 days
+10      1292798                         # ~43 days
+11      1632648                         # ~85 days
+12      2026148                         # ~6 months
+13      2491248                         # ~1 year
+14      2822514                         # ~2 years
+15      2896593                         # ~32768 hours = ~4 years
+16      1126096
+17      10013
 ```
 
 We need two subsets, one for "eigenusers" (stuff that fits into a matrix) and
