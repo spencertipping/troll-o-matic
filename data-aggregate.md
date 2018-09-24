@@ -149,8 +149,7 @@ like bots, but we want those.
 OK, let's assume the most absolutely dedicated redditor spends 12 hours a day
 online creating one comment per minute. This is a maximum of 720 comments per
 day, which is an insane amount. Let's find each redditor's observable lifetime,
-and to simplify this let's build a user index -- and let's shard aggressively by
-user ID.
+and to simplify this let's build a user index, sharded by user ID.
 
 ```sh
 $ mkdir user-comments; \
@@ -159,6 +158,19 @@ $ mkdir user-comments; \
                           r "/tmp/" . ($h >> 5),
                             sprintf("user-comments/%03x", $h), $_'] \
      S\>S\>z4
+```
+
+Lifetime calculation:
+
+```sh
+$ mkdir -p /tmp/user-comments; \
+  ni user-comments e[ xargs -P24 -I{} \
+    ni {} fACp'^{%max = %min = ()}
+               $max{+a} = max $max{+a} // b, b;
+               $min{+a} = min $min{+a} // b, b; ();
+               END { r $_, $min{$_}, $max{$_} for keys %max }' \
+          z4\>/tmp/{} ] \
+    \<z4\>user-lifetimes
 ```
 
 We need two subsets, one for "eigenusers" (stuff that fits into a matrix) and
