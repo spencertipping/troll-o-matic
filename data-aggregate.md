@@ -194,6 +194,14 @@ $ ni user-lifetimes \<S24[p'(c - b) / 3600' ,L2q] ocx
 17      10013
 ```
 
+Frequency distribution of subreddits:
+
+```sh
+$ mkdir user-subreddits; \
+  ni user-comments F:/fB e[ xargs -P24 -I{} \
+    ni user-comments/{} fAB UfBCAz4\>user-subreddits/{} ] | cat
+```
+
 We need two subsets, one for "eigenusers" (stuff that fits into a matrix) and
 one for "nontrivial users" (anyone who posts to more than one subreddit, more or
 less).
