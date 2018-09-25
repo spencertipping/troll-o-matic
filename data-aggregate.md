@@ -40,21 +40,16 @@ for each:
     - Downvotes
 
 ```sh
-$ mkdir -p agg-comments agg-submissions
-
 $ ni reddit-comments r/\\/20/ F:/fB \
-     e[ xargs -P24 -I{} \
-        ni reddit-comments/{} \
-           D:author,:subreddit,:created_utc,:link_id,:parent_id,:score,:controversiality \
-           rABC z4\>agg-comments/{} ] \
-  | cat
+     SX24 reddit-comments/{} \
+          z4\>agg-comments/{} \
+          [D:author,:subreddit,:created_utc,:link_id,:parent_id,:score,:controversiality \
+           rABC]
 
 $ ni reddit-submissions r/\\/20/ F:/fB \
-     e[ xargs -P24 -I{} \
-        ni reddit-submissions/{} \
-           D:author,:subreddit,:created_utc,:name,:domain,:ups,:downs rABC \
-           z4\>agg-submissions/{} ] \
-  | cat
+     SX24 reddit-submissions/{}
+          z4\>agg-submissions/{} \
+          [D:author,:subreddit,:created_utc,:name,:domain,:ups,:downs rABC]
 ```
 
 ## User/subreddit counts
@@ -152,8 +147,7 @@ day, which is an insane amount. Let's find each redditor's observable lifetime,
 and to simplify this let's build a user index, sharded by user ID.
 
 ```sh
-$ mkdir user-comments; \
-  ni agg-comments \<S12[rp'a ne "[deleted]"' \
+$ ni agg-comments \<S12[rp'a ne "[deleted]"' \
                         p'my $h = unpack(n => md5 a) >> 6;    # 1024 shards
                           r "/tmp/" . ($h >> 5),
                             sprintf("user-comments/%03x", $h), $_'] \
@@ -163,14 +157,13 @@ $ mkdir user-comments; \
 Lifetime calculation:
 
 ```sh
-$ mkdir -p user-lifetimes; \
-  ni user-comments F:/fB e[ xargs -P24 -I{} \
-    ni user-comments/{} fAC \
-       p'^{%max = %min = ()}
-           $max{+a} = max $max{+a} // b, b;
-           $min{+a} = min $min{+a} // b, b; ();
-           END { r $_, $min{$_}, $max{$_} for keys %max }' \
-       z4\>user-lifetimes/{} ] | cat
+$ ni user-comments F:/fB \
+     SX24 user-comments/{} \
+          z4\>user-lifetimes/{} \
+          fACp'^{%max = %min = ()}
+               $max{+a} = max $max{+a} // b, b;
+               $min{+a} = min $min{+a} // b, b; ();
+               END { r $_, $min{$_}, $max{$_} for keys %max }'
 
 # quick histogram of rounded log2(#hours)
 $ ni user-lifetimes \<S24[p'(c - b) / 3600' ,L2q] ocx
@@ -197,9 +190,10 @@ $ ni user-lifetimes \<S24[p'(c - b) / 3600' ,L2q] ocx
 Frequency distribution of subreddits:
 
 ```sh
-$ mkdir user-subreddits; \
-  ni user-comments F:/fB e[ xargs -P24 -I{} \
-    ni user-comments/{} fAB UfBCAz4\>user-subreddits/{} ] | cat
+$ ni user-comments F:/fB \
+     SX24 user-comments/{} \
+          UfBCAz4\>user-subreddits/{} \
+          fAB
 ```
 
 We need two subsets, one for "eigenusers" (stuff that fits into a matrix) and
