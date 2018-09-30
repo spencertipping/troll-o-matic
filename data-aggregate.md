@@ -190,12 +190,30 @@ $ ni user-lifetimes \<S24[p'(c - b) / 3600' ,L2q] ocx
 Frequency distribution of subreddits:
 
 ```sh
-$ ni user-comments F:/fB \
-     SX24 user-comments/{} \
-          UfBCAz4\>user-subreddits/{} \
-          fAB
+$ ni user-comments F:/fB SX24 user-comments/{} UfBCAz4\>user-subreddits/{} fAB
 ```
 
 We need two subsets, one for "eigenusers" (stuff that fits into a matrix) and
 one for "nontrivial users" (anyone who posts to more than one subreddit, more or
-less).
+less). Let's build nontrivial users first, filtering to just nontrivial
+subreddits:
+
+```sh
+$ ni user-subreddits F:/fB \
+     SX24 user-subreddits/{} z\>nontrivial-users/{} \
+          [riBrelevant-subs p'my ($u, @cs) = (a, c_ rea);
+                              @cs > 1 ? r a, scalar(@cs), sum @cs : ()'] \
+  | cat
+```
+
+Now let's get a set of users large enough to fill out the matrix dimensions:
+
+```sh
+$ units -t '144GB / 8B / 3 / 19403'
+309230.53
+```
+
+Awesome; let's take the top 300k users by posting frequency.
+
+- **TODO:** discuss column indexing
+- **TODO:** top 300k vs random 300k?
